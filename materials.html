@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Materials & Finishes — Kensora by Kalakruthi</title>
+  <meta name="description" content="Explore Kensora's exclusive material library — rare Italian marble, aged veneers, hand-woven fabrics, artisan metals and bespoke glass from the world's finest origins." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    /* ── Material Cards ── */
+    .material-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+    .material-card {
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-sm); background: var(--white);
+      border: 1px solid rgba(0,0,0,0.05); transition: var(--transition);
+      cursor: pointer;
+    }
+    .material-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .material-card__swatch { height: 200px; position: relative; overflow: hidden; }
+    .material-card__swatch img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .material-card:hover .material-card__swatch img { transform: scale(1.08); }
+    .material-card__origin {
+      position: absolute; bottom: 12px; left: 12px;
+      background: rgba(18,37,53,0.85); color: var(--gold-light);
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+    }
+    .material-card__grade {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--gold); color: var(--charcoal);
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      padding: 3px 10px; border-radius: 100px;
+    }
+    .material-card__body { padding: 20px 22px; }
+    .material-card__category { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .material-card h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--teal); margin-bottom: 6px; }
+    .material-card p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.65; margin-bottom: 14px; }
+    .material-card__footer { display: flex; align-items: center; justify-content: space-between; }
+    .material-card__sample {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal); text-decoration: underline; text-underline-offset: 3px;
+      transition: var(--transition);
+    }
+    .material-card__sample:hover { color: var(--gold); }
+
+    /* ── Category Sections ── */
+    .mat-category { margin-bottom: 80px; }
+    .mat-category__header {
+      display: flex; align-items: center; gap: 24px; margin-bottom: 36px;
+    }
+    .mat-category__header .subheading { margin: 0; }
+    .mat-category__line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); }
+
+    /* ── Standards Banner ── */
+    .standards { background: var(--cream); padding: 80px 0; }
+    .standards-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 32px; }
+    .standard-item { text-align: center; }
+    .standard-item__icon {
+      width: 72px; height: 72px; margin: 0 auto 20px;
+      border-radius: 50%; background: rgba(29,58,74,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; color: var(--teal);
+      transition: var(--transition);
+    }
+    .standard-item:hover .standard-item__icon { background: var(--teal); color: var(--gold); transform: scale(1.1); }
+    .standard-item h3 { font-family: var(--font-display); font-size: 1.15rem; color: var(--teal); margin-bottom: 8px; }
+    .standard-item p { font-size: 0.85rem; color: var(--text-mid); line-height: 1.65; }
+
+    /* ── Sample Request ── */
+    .sample-cta {
+      background: var(--teal);
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 480px;
+    }
+    .sample-cta__img { overflow: hidden; }
+    .sample-cta__img img { width: 100%; height: 100%; object-fit: cover; }
+    .sample-cta__content {
+      padding: 80px 70px; display: flex; flex-direction: column; justify-content: center;
+    }
+    .sample-cta__content h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3vw,2.8rem); color: var(--cream); margin: 16px 0 20px; }
+    .sample-cta__content p { color: rgba(245,240,232,0.7); margin-bottom: 32px; line-height: 1.8; }
+    .sample-form { display: flex; flex-direction: column; gap: 16px; }
+    .sample-form input {
+      padding: 13px 18px; border: 1px solid rgba(181,154,106,0.3);
+      border-radius: var(--radius); background: rgba(255,255,255,0.08);
+      color: var(--cream); font-size: 0.9rem; font-family: var(--font-body);
+      outline: none; transition: var(--transition);
+    }
+    .sample-form input::placeholder { color: rgba(245,240,232,0.4); }
+    .sample-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.12); }
+
+    @media (max-width: 1280px) { .material-grid { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 1024px) {
+      .material-grid { grid-template-columns: repeat(2,1fr); }
+      .standards-grid { grid-template-columns: repeat(2,1fr); }
+      .sample-cta { grid-template-columns: 1fr; }
+      .sample-cta__img { height: 320px; }
+      .sample-cta__content { padding: 60px 40px; }
+    }
+    @media (max-width: 640px) {
+      .material-grid { grid-template-columns: 1fr; }
+      .standards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo"><img src="images/logo.jpg" alt="Kensora" /></a>
+    <ul class="navbar__nav">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="portfolio.html#living">Living Spaces</a><a href="portfolio.html#bedroom">Bedrooms</a>
+          <a href="portfolio.html#kitchen">Kitchens</a><a href="portfolio.html#office">Home Office</a>
+        </div>
+      </li>
+      <li><a href="materials.html" class="active">Materials</a></li>
+      <li><a href="process.html">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown"><a href="blog.html">All Stories</a></div>
+      </li>
+    </ul>
+    <div class="navbar__cta"><a href="contact.html" class="btn btn-primary">Book Consultation</a></div>
+    <div class="navbar__hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials</a><a href="process.html">Our Process</a>
+  <a href="about.html">About</a><a href="blog.html">Stories</a>
+  <a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<section class="page-hero" style="padding-top:var(--nav-h);">
+  <img class="page-hero__bg" src="images/materials-hero.png" alt="Kensora Materials" />
+  <div class="container">
+    <p class="subheading">The Material Library</p>
+    <h1 class="heading-1" style="color:var(--off-white);font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);">Sourced From the World's Finest Origins</h1>
+    <p>Every surface in a Kensora interior tells a story of provenance, rarity and extraordinary beauty.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="subheading">Curated Excellence</p>
+      <h2 class="heading-1">The Kensora Material Library</h2>
+      <div class="gold-rule"></div>
+      <p>Our material curators travel the world to source surfaces of extraordinary character — from the marble quarries of Carrara to the silk looms of Varanasi. Each material is tested for beauty, durability and sustainability.</p>
+    </div>
+
+    <!-- MARBLE & STONE -->
+    <div class="mat-category">
+      <div class="mat-category__header reveal">
+        <p class="subheading">01</p>
+        <h2 class="heading-2" style="color:var(--teal);">Marble & Natural Stone</h2>
+        <div class="mat-category__line"></div>
+      </div>
+      <div class="material-grid">
+        <div class="material-card reveal">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Carrara Marble" loading="lazy" />
+            <span class="material-card__origin">Carrara, Italy</span>
+            <span class="material-card__grade">Grade AAA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Marble</p>
+            <h3>Bianco Carrara</h3>
+            <p>The gold standard of white marble. Pure white with delicate silver-grey veining — timeless, prestigious and extraordinarily versatile.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Countertop · Flooring</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-1">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Nero Marquina" loading="lazy" />
+            <span class="material-card__origin">Bilbao, Spain</span>
+            <span class="material-card__grade">Grade AA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Marble</p>
+            <h3>Nero Marquina</h3>
+            <p>Dramatic jet-black marble with contrasting white veining. A bold statement stone that commands attention in any statement application.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Feature Walls · Flooring</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-2">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Kashmir Gold" loading="lazy" />
+            <span class="material-card__origin">Rajasthan, India</span>
+            <span class="material-card__grade">Grade A</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Granite</p>
+            <h3>Kashmir Gold Granite</h3>
+            <p>A warm golden granite with intricate black and rust speckling. Exceptional hardness makes it ideal for kitchen countertops and outdoor terraces.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Kitchen · Outdoor</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-3">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="White Onyx" loading="lazy" />
+            <span class="material-card__origin">Iran</span>
+            <span class="material-card__grade">Grade AAA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Onyx</p>
+            <h3>White Persian Onyx</h3>
+            <p>Semi-translucent and ethereally beautiful with amber and cream tones. Backlit onyx panels create an unparalleled luminous luxury effect.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Backlit Panels · Bar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WOOD VENEERS -->
+    <div class="mat-category">
+      <div class="mat-category__header reveal">
+        <p class="subheading">02</p>
+        <h2 class="heading-2" style="color:var(--teal);">Wood Veneers & Timber</h2>
+        <div class="mat-category__line"></div>
+      </div>
+      <div class="material-grid">
+        <div class="material-card reveal">
+          <div class="material-card__swatch">
+            <img src="images/portfolio-bedroom.png" alt="Golden Teak" loading="lazy" />
+            <span class="material-card__origin">Myanmar / Kerala</span>
+            <span class="material-card__grade">Grade A</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Veneer</p>
+            <h3>Golden Teak Veneer</h3>
+            <p>Rich warm honey tones with natural oils that repel water. Perfect for wardrobes, panelling and furniture in luxury residences.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Panelling · Furniture</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-1">
+          <div class="material-card__swatch">
+            <img src="images/portfolio-office.png" alt="American Walnut" loading="lazy" />
+            <span class="material-card__origin">North America</span>
+            <span class="material-card__grade">Grade AAA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Veneer</p>
+            <h3>American Black Walnut</h3>
+            <p>Deep chocolate-brown grain with exceptional character. The preferred choice for masculine studies, executive offices and master suites.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Study · Bedroom</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-2">
+          <div class="material-card__swatch">
+            <img src="images/portfolio-bedroom.png" alt="White Oak" loading="lazy" />
+            <span class="material-card__origin">Europe</span>
+            <span class="material-card__grade">Grade AA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Veneer</p>
+            <h3>White Quarter-Sawn Oak</h3>
+            <p>Clean, architectural grain pattern with a cool blonde tone. The contemporary Scandinavian-modern favourite for kitchens and living areas.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Kitchen · Living</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-3">
+          <div class="material-card__swatch">
+            <img src="images/portfolio-office.png" alt="Macassar Ebony" loading="lazy" />
+            <span class="material-card__origin">Indonesia</span>
+            <span class="material-card__grade">Grade AAA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Veneer</p>
+            <h3>Macassar Ebony</h3>
+            <p>Dramatically striped in deep brown and black — one of the world's most prized cabinet-making materials. Reserved for collectors' furniture.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Bespoke Furniture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FABRICS & TEXTILES -->
+    <div class="mat-category">
+      <div class="mat-category__header reveal">
+        <p class="subheading">03</p>
+        <h2 class="heading-2" style="color:var(--teal);">Fabrics, Silks & Textiles</h2>
+        <div class="mat-category__line"></div>
+      </div>
+      <div class="material-grid">
+        <div class="material-card reveal">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Varanasi Silk" loading="lazy" />
+            <span class="material-card__origin">Varanasi, India</span>
+            <span class="material-card__grade">Handwoven</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Silk</p>
+            <h3>Pure Banarasi Silk</h3>
+            <p>Hand-woven with zari goldwork, this pure silk is sourced directly from master weavers. Used for drapery, headboards and accent cushions.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Drapery · Upholstery</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-1">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Belgian Velvet" loading="lazy" />
+            <span class="material-card__origin">Belgium</span>
+            <span class="material-card__grade">Grade A</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Velvet</p>
+            <h3>Belgian Cut Velvet</h3>
+            <p>Deep pile, lush Belgian velvet in over 60 custom dye colours. The pinnacle of sofa and headboard upholstery for the luxuriously inclined.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Sofas · Headboards</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-2">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="French Linen" loading="lazy" />
+            <span class="material-card__origin">Normandy, France</span>
+            <span class="material-card__grade">Grade AA</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Linen</p>
+            <h3>French Stone-Washed Linen</h3>
+            <p>Naturally breathable and casually elegant. Stone-washed for a beautifully tumbled texture — ideal for curtains and casual upholstered pieces.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Curtains · Cushions</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-3">
+          <div class="material-card__swatch">
+            <img src="images/materials-hero.png" alt="Moroccan Wool" loading="lazy" />
+            <span class="material-card__origin">Marrakech, Morocco</span>
+            <span class="material-card__grade">Handknotted</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Rug</p>
+            <h3>Hand-Knotted Beni Ourain</h3>
+            <p>Traditional Berber wool rugs handknotted by mountain artisans. Each piece is unique — a geometric tribal masterpiece underfoot.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Rugs · Floor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METALS -->
+    <div class="mat-category">
+      <div class="mat-category__header reveal">
+        <p class="subheading">04</p>
+        <h2 class="heading-2" style="color:var(--teal);">Metals & Artisan Hardware</h2>
+        <div class="mat-category__line"></div>
+      </div>
+      <div class="material-grid">
+        <div class="material-card reveal">
+          <div class="material-card__swatch">
+            <img src="images/brand-mockup.jpg" alt="Brushed Brass" loading="lazy" />
+            <span class="material-card__origin">Germany</span>
+            <span class="material-card__grade">PVD Coated</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Metal</p>
+            <h3>PVD Brushed Brass</h3>
+            <p>Physical vapour deposition coated brass that resists tarnish for decades. The defining Kensora hardware finish — warm, rich and aristocratic.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Hardware · Fixtures</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-1">
+          <div class="material-card__swatch">
+            <img src="images/brand-mockup.jpg" alt="Blackened Steel" loading="lazy" />
+            <span class="material-card__origin">India</span>
+            <span class="material-card__grade">Custom Fabricated</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Metal</p>
+            <h3>Blackened Steel</h3>
+            <p>Cold-blackened structural steel for shelving frames, stair balustrades and window frames. Industrial strength with refined aesthetic restraint.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Frames · Structure</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-2">
+          <div class="material-card__swatch">
+            <img src="images/brand-mockup.jpg" alt="Bronze" loading="lazy" />
+            <span class="material-card__origin">Moradabad, India</span>
+            <span class="material-card__grade">Cast & Polished</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Metal</p>
+            <h3>Cast Bronze</h3>
+            <p>Hand-cast and polished by artisans in Moradabad for door handles, console legs and decorative architectural elements of timeless character.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Hardware · Décor</span>
+            </div>
+          </div>
+        </div>
+        <div class="material-card reveal reveal-delay-3">
+          <div class="material-card__swatch">
+            <img src="images/brand-mockup.jpg" alt="Copper" loading="lazy" />
+            <span class="material-card__origin">Rajasthan, India</span>
+            <span class="material-card__grade">Hammered</span>
+          </div>
+          <div class="material-card__body">
+            <p class="material-card__category">Metal</p>
+            <h3>Hammered Copper</h3>
+            <p>Hand-hammered copper sheets for kitchen backsplashes, sink aprons and decorative panels — warm, anti-microbial and ageing beautifully.</p>
+            <div class="material-card__footer">
+              <a href="contact.html" class="material-card__sample">Request Sample</a>
+              <span class="badge">Kitchen · Decorative</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUALITY STANDARDS -->
+<section class="standards section--cream">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="subheading">Our Standards</p>
+      <h2 class="heading-1">Material Excellence Principles</h2>
+      <div class="gold-rule"></div>
+    </div>
+    <div class="standards-grid">
+      <div class="standard-item reveal">
+        <div class="standard-item__icon">◈</div>
+        <h3>Direct Source Relationships</h3>
+        <p>We work directly with quarries, mills and ateliers — no intermediaries — ensuring provenance, quality control and exclusive access.</p>
+      </div>
+      <div class="standard-item reveal reveal-delay-1">
+        <div class="standard-item__icon">✦</div>
+        <h3>Rigorous Quality Testing</h3>
+        <p>All materials undergo physical testing for hardness, slip-resistance, stain-resistance and UV stability before entering our library.</p>
+      </div>
+      <div class="standard-item reveal reveal-delay-2">
+        <div class="standard-item__icon">⊹</div>
+        <h3>Sustainable Sourcing</h3>
+        <p>Certified quarries, FSC-certified veneers and organic dye fabrics wherever possible — beauty without compromising the planet.</p>
+      </div>
+      <div class="standard-item reveal reveal-delay-3">
+        <div class="standard-item__icon">◉</div>
+        <h3>Exclusive Access for Clients</h3>
+        <p>Many materials in our library are unavailable in the Indian retail market — exclusive to Kensora project clients only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE CTA -->
+<section class="sample-cta">
+  <div class="sample-cta__img reveal">
+    <img src="images/materials-hero.png" alt="Request Material Samples" loading="lazy" />
+  </div>
+  <div class="sample-cta__content">
+    <p class="subheading reveal">Begin Your Selection</p>
+    <h2 class="reveal reveal-delay-1">Request a Material Sample Kit</h2>
+    <p class="reveal reveal-delay-2">Our material curators will prepare a personalised selection of samples based on your project brief and deliver it to your doorstep for a tactile, in-home experience.</p>
+    <form class="sample-form reveal reveal-delay-3" onsubmit="event.preventDefault();this.innerHTML='<p style=\'color:var(--gold);font-size:1.1rem;\'>Thank you! Your sample request has been submitted. Our team will contact you within 24 hours.</p>'">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Email Address" required />
+      <input type="tel" placeholder="Phone Number" required />
+      <input type="text" placeholder="Project Location / City" />
+      <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Request Sample Kit</button>
+    </form>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a><a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a><a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Quick Links</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li><li><a href="materials.html">Materials</a></li>
+        <li><a href="process.html">Our Process</a></li><li><a href="about.html">About Us</a></li>
+        <li><a href="blog.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Materials</h4><ul>
+        <li><a href="#marble">Marble & Stone</a></li><li><a href="#veneer">Wood Veneers</a></li>
+        <li><a href="#fabric">Fabrics & Textiles</a></li><li><a href="#metal">Metals & Hardware</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Contact Us</h4>
+        <div class="footer__contact-item"><div class="footer__contact-icon">✉</div><span>kensora@kalakruthi.com</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">☎</div><span>+91 98765 43210</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">⊹</div><span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards"><span class="footer__award-badge">India Design Award 2024</span><span class="footer__award-badge">Luxury Interior Guild</span></div>
+      <div class="footer__legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Consultation — Kensora by Kalakruthi</title>
+  <meta name="description" content="Book your complimentary design consultation with Kensora by Kalakruthi. Tell us about your project and let our team craft your dream interior." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    /* ── Layout ── */
+    .contact-layout {
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 0; min-height: 100vh;
+    }
+    .contact-form-panel {
+      padding: 100px 80px; background: var(--off-white);
+    }
+    .contact-sidebar {
+      background: var(--teal); padding: 100px 60px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .contact-sidebar h2 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 300; color: var(--cream); margin: 20px 0 16px; }
+    .contact-sidebar p { color: rgba(245,240,232,0.7); line-height: 1.8; margin-bottom: 32px; }
+    .sidebar-divider { height: 1px; background: rgba(181,154,106,0.2); margin: 32px 0; }
+    .sidebar-contact-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 24px; }
+    .sidebar-contact-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: rgba(181,154,106,0.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: var(--gold); margin-top: 2px;
+    }
+    .sidebar-contact-item h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .sidebar-contact-item p { color: rgba(245,240,232,0.75); font-size: 0.9rem; margin: 0; }
+    .sidebar-img { border-radius: var(--radius-lg); overflow: hidden; height: 200px; }
+    .sidebar-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Form Steps ── */
+    .step-progress { display: flex; gap: 8px; margin-bottom: 40px; }
+    .step-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(0,0,0,0.12); transition: var(--transition);
+    }
+    .step-dot.active { background: var(--gold); transform: scale(1.3); }
+    .form-step { display: none; }
+    .form-step.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .form-step__title { font-family: var(--font-display); font-size: 2rem; color: var(--teal); margin-bottom: 8px; }
+    .form-step__sub { color: var(--text-light); margin-bottom: 32px; font-size: 0.9rem; }
+
+    /* ── Option Cards ── */
+    .option-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+    .option-card {
+      border: 1.5px solid rgba(181,154,106,0.2); border-radius: var(--radius-lg);
+      padding: 16px 12px; text-align: center; cursor: pointer; transition: var(--transition);
+    }
+    .option-card:hover { border-color: var(--gold); background: rgba(181,154,106,0.06); }
+    .option-card.selected { border-color: var(--teal); background: rgba(29,58,74,0.06); }
+    .option-card__icon { font-size: 1.6rem; margin-bottom: 8px; color: var(--text-mid); }
+    .option-card.selected .option-card__icon { color: var(--teal); }
+    .option-card p { font-size: 0.78rem; font-weight: 600; color: var(--text-mid); }
+    .option-card.selected p { color: var(--teal); }
+
+    /* ── Budget ── */
+    .budget-options { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 24px; }
+    .budget-option {
+      border: 1.5px solid rgba(181,154,106,0.2); border-radius: var(--radius); padding: 14px 18px;
+      cursor: pointer; transition: var(--transition);
+    }
+    .budget-option:hover { border-color: var(--gold); }
+    .budget-option.selected { border-color: var(--teal); background: rgba(29,58,74,0.06); }
+    .budget-option p { font-size: 0.85rem; font-weight: 600; color: var(--text-mid); }
+    .budget-option span { font-size: 0.75rem; color: var(--text-light); }
+    .budget-option.selected p { color: var(--teal); }
+
+    /* ── Form Navigation ── */
+    .form-nav { display: flex; gap: 12px; align-items: center; margin-top: 32px; }
+    .form-step-count { font-size: 0.78rem; font-weight: 600; color: var(--text-light); margin-left: auto; }
+
+    /* ── Success ── */
+    #formSuccess {
+      display: none; text-align: center; padding: 60px 40px;
+    }
+    #formSuccess .success-icon { font-size: 4rem; margin-bottom: 24px; }
+    #formSuccess h2 { font-family: var(--font-display); font-size: 2.5rem; color: var(--teal); margin-bottom: 16px; }
+    #formSuccess p { color: var(--text-mid); font-size: 1.05rem; line-height: 1.8; max-width: 480px; margin: 0 auto 32px; }
+
+    /* ── WhatsApp CTA ── */
+    .whatsapp-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #25D366; color: var(--white);
+      padding: 14px 28px; border-radius: var(--radius);
+      font-size: 0.85rem; font-weight: 600; transition: var(--transition);
+      text-decoration: none;
+    }
+    .whatsapp-cta:hover { background: #1da558; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
+    .whatsapp-cta::before { content: '◉'; font-size: 1.2rem; }
+
+    @media (max-width: 1024px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .contact-sidebar { position: static; height: auto; padding: 60px 40px; }
+      .contact-form-panel { padding: 60px 40px; }
+      .option-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 640px) {
+      .contact-form-panel { padding: 40px 20px; }
+      .contact-sidebar { padding: 40px 20px; }
+      .option-grid { grid-template-columns: repeat(2,1fr); }
+      .budget-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo"><img src="images/logo.jpg" alt="Kensora" /></a>
+    <ul class="navbar__nav">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="portfolio.html#living">Living Spaces</a><a href="portfolio.html#bedroom">Bedrooms</a>
+        </div>
+      </li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="process.html">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown"><a href="blog.html">All Stories</a></div>
+      </li>
+    </ul>
+    <div class="navbar__cta"><a href="contact.html" class="btn btn-primary" style="background:var(--teal);color:var(--cream);">Book Consultation</a></div>
+    <div class="navbar__hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials</a><a href="process.html">Our Process</a>
+  <a href="about.html">About</a><a href="blog.html">Stories</a>
+  <a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<div style="padding-top:var(--nav-h);">
+  <div class="contact-layout">
+
+    <!-- FORM PANEL -->
+    <div class="contact-form-panel">
+      <div id="consultationForm">
+        <p class="subheading">Complimentary Consultation</p>
+        <div class="step-progress">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <!-- STEP 1: Space Type -->
+        <div class="form-step active" data-step="1">
+          <h2 class="form-step__title">What are we designing?</h2>
+          <p class="form-step__sub">Tell us about the space you have in mind.</p>
+          <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">⌂</div>
+              <p>Full Home</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">◈</div>
+              <p>Kitchen</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">◫</div>
+              <p>Bedroom</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">✦</div>
+              <p>Living Room</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">⊹</div>
+              <p>Office</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">◉</div>
+              <p>Commercial</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Other / Multiple Spaces</label>
+            <input type="text" placeholder="Describe your space..." />
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-primary btn-next-step">Continue &#8594;</button>
+            <span class="form-step-count">Step 1 of 4</span>
+          </div>
+        </div>
+
+        <!-- STEP 2: Budget -->
+        <div class="form-step" data-step="2">
+          <h2 class="form-step__title">Investment Range</h2>
+          <p class="form-step__sub">This helps us recommend the right design package and materials.</p>
+          <div class="budget-options">
+            <div class="budget-option" onclick="selectBudget(this)">
+              <p>₹10 – 30 Lakhs</p><span>Signature Package eligible</span>
+            </div>
+            <div class="budget-option" onclick="selectBudget(this)">
+              <p>₹30 – 60 Lakhs</p><span>Prestige Package eligible</span>
+            </div>
+            <div class="budget-option" onclick="selectBudget(this)">
+              <p>₹60 – 1 Crore</p><span>Prestige / Grand Atelier</span>
+            </div>
+            <div class="budget-option" onclick="selectBudget(this)">
+              <p>₹1 Crore+</p><span>Grand Atelier — fully bespoke</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Property Location / City</label>
+            <input type="text" placeholder="e.g. Bengaluru, Hyderabad, Mumbai..." />
+          </div>
+          <div class="form-group">
+            <label>Approximate Area (sq.ft)</label>
+            <input type="text" placeholder="e.g. 2,500 sq.ft" />
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-outline btn-prev-step">&#8592; Back</button>
+            <button class="btn btn-primary btn-next-step">Continue &#8594;</button>
+            <span class="form-step-count">Step 2 of 4</span>
+          </div>
+        </div>
+
+        <!-- STEP 3: Timeline -->
+        <div class="form-step" data-step="3">
+          <h2 class="form-step__title">When do you wish to begin?</h2>
+          <p class="form-step__sub">Knowing your timeline helps us allocate the right design team.</p>
+          <div class="option-grid" style="grid-template-columns: repeat(2,1fr);">
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">◉</div>
+              <p>Immediately</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">⊹</div>
+              <p>Within 3 months</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">✦</div>
+              <p>3 – 6 months</p>
+            </div>
+            <div class="option-card" onclick="selectOption(this)">
+              <div class="option-card__icon">◈</div>
+              <p>Exploring / Planning</p>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:20px;">
+            <label>Tell us more about your vision (optional)</label>
+            <textarea placeholder="Share any inspiration, references, or thoughts about what you're looking for..." rows="4"></textarea>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-outline btn-prev-step">&#8592; Back</button>
+            <button class="btn btn-primary btn-next-step">Continue &#8594;</button>
+            <span class="form-step-count">Step 3 of 4</span>
+          </div>
+        </div>
+
+        <!-- STEP 4: Contact Details -->
+        <div class="form-step" data-step="4">
+          <h2 class="form-step__title">Your Details</h2>
+          <p class="form-step__sub">Our Design Director will be in touch personally within 24 hours.</p>
+          <form id="consultationFormFinal" onsubmit="submitConsultation(event)">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" required placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" required placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" required placeholder="+91 98765 43210" />
+            </div>
+            <div class="form-group">
+              <label>How did you hear about Kensora?</label>
+              <select>
+                <option value="">Please select...</option>
+                <option>Google Search</option>
+                <option>Instagram / Social Media</option>
+                <option>Word of Mouth / Referral</option>
+                <option>Press / Magazine</option>
+                <option>Hoarding / Advertising</option>
+                <option>Previous Client</option>
+              </select>
+            </div>
+            <div class="form-nav">
+              <button class="btn btn-outline btn-prev-step" type="button">&#8592; Back</button>
+              <button type="submit" class="btn btn-primary">Submit Consultation Request</button>
+              <span class="form-step-count">Step 4 of 4</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div id="formSuccess">
+        <div class="success-icon">✦</div>
+        <h2>Your Consultation is Requested</h2>
+        <p>Thank you for reaching out to Kensora. Our Design Director will personally contact you within 24 hours to schedule your complimentary design discovery session.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <a href="portfolio.html" class="btn btn-dark">Explore Our Portfolio</a>
+          <a href="https://wa.me/919876543210" class="whatsapp-cta" target="_blank">Chat on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="contact-sidebar">
+      <div>
+        <p class="subheading">Kensora Design Studio</p>
+        <h2>Let's Create Something Extraordinary Together</h2>
+        <p>Your consultation is entirely complimentary — a relaxed, exploratory conversation about your vision, your space and how Kensora can bring it to life. No obligation. Just inspiration.</p>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-contact-item">
+          <div class="sidebar-contact-icon">✉</div>
+          <div>
+            <h4>Email</h4>
+            <p>kensora@kalakruthi.com</p>
+          </div>
+        </div>
+        <div class="sidebar-contact-item">
+          <div class="sidebar-contact-icon">☎</div>
+          <div>
+            <h4>Phone</h4>
+            <p>+91 98765 43210</p>
+            <p style="font-size:0.8rem;color:rgba(245,240,232,0.45);margin-top:2px;">Mon–Sat, 9am–6pm</p>
+          </div>
+        </div>
+        <div class="sidebar-contact-item">
+          <div class="sidebar-contact-icon">⊹</div>
+          <div>
+            <h4>Design Studio</h4>
+            <p>12th Cross, Indiranagar<br/>Bengaluru — 560 038</p>
+          </div>
+        </div>
+        <div class="sidebar-divider"></div>
+        <a href="https://wa.me/919876543210" class="whatsapp-cta" target="_blank" style="margin-bottom:24px;display:inline-flex;">Chat on WhatsApp</a>
+      </div>
+      <div>
+        <div class="sidebar-img">
+          <img src="images/brand-mockup.jpg" alt="Kensora Studio" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a><a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a><a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Quick Links</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li><li><a href="materials.html">Materials</a></li>
+        <li><a href="process.html">Our Process</a></li><li><a href="about.html">About Us</a></li>
+        <li><a href="blog.html">Stories</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Services</h4><ul>
+        <li><a href="services.html#full-home">Full-Home Interiors</a></li>
+        <li><a href="services.html#kitchen">Modular Kitchens</a></li>
+        <li><a href="services.html#wardrobe">Wardrobes</a></li>
+        <li><a href="services.html#commercial">Commercial</a></li>
+        <li><a href="services.html#turnkey">Turnkey</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Contact Us</h4>
+        <div class="footer__contact-item"><div class="footer__contact-icon">✉</div><span>kensora@kalakruthi.com</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">☎</div><span>+91 98765 43210</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">⊹</div><span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards"><span class="footer__award-badge">India Design Award 2024</span><span class="footer__award-badge">Luxury Interior Guild</span></div>
+      <div class="footer__legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+function selectOption(el) {
+  el.closest('.option-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectBudget(el) {
+  el.closest('.budget-options').querySelectorAll('.budget-option').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function submitConsultation(e) {
+  e.preventDefault();
+  document.getElementById('consultationForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Process — Kensora by Kalakruthi</title>
+  <meta name="description" content="Discover the Kensora design process — 6 meticulous stages from discovery to handover, ensuring your vision is realised with flawless craftsmanship." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    /* ── Process Stage ── */
+    .process-stage {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center; padding: 80px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .process-stage:last-child { border-bottom: none; }
+    .process-stage:nth-child(even) .process-stage__content { order: 2; }
+    .process-stage:nth-child(even) .process-stage__visual { order: 1; }
+    .process-stage__visual { position: relative; }
+    .process-stage__img {
+      width: 100%; aspect-ratio: 4/3;
+      object-fit: cover; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+    .process-stage__num-badge {
+      position: absolute; bottom: -24px; right: -24px;
+      width: 88px; height: 88px; border-radius: 50%;
+      background: var(--gold); color: var(--charcoal);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1;
+      box-shadow: var(--shadow-gold);
+    }
+    .process-stage__num-badge small { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+    .process-stage__label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .process-stage h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3vw,2.8rem); color: var(--teal); margin-bottom: 20px; }
+    .process-stage p { color: var(--text-mid); line-height: 1.85; margin-bottom: 16px; font-size: 0.97rem; }
+    .process-deliverables { margin-top: 28px; }
+    .process-deliverables h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+    .process-deliverables ul { display: flex; flex-direction: column; gap: 8px; }
+    .process-deliverables li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem; color: var(--text-mid);
+    }
+    .process-deliverables li::before { content: '◆'; font-size: 0.45rem; color: var(--gold); flex-shrink: 0; }
+
+    /* ── Timeline Bar ── */
+    .timeline-bar {
+      background: var(--cream); padding: 60px 0;
+      position: sticky; top: var(--nav-h); z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .timeline-inner {
+      display: flex; gap: 0; counter-reset: stage;
+    }
+    .timeline-step {
+      flex: 1; text-align: center; position: relative;
+      padding: 8px 4px 0; cursor: pointer;
+      transition: var(--transition);
+    }
+    .timeline-step::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 50%; height: 3px;
+      background: var(--gold); opacity: 0.2;
+    }
+    .timeline-step::after {
+      content: ''; position: absolute;
+      top: 0; left: 50%; right: 0; height: 3px;
+      background: var(--gold); opacity: 0.2;
+    }
+    .timeline-step:first-child::before, .timeline-step:last-child::after { display: none; }
+    .timeline-step__dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--cream); border: 2px solid rgba(181,154,106,0.3);
+      margin: 0 auto 8px; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--text-light);
+      transition: var(--transition);
+    }
+    .timeline-step.done .timeline-step__dot,
+    .timeline-step.active .timeline-step__dot {
+      background: var(--gold); border-color: var(--gold); color: var(--charcoal);
+    }
+    .timeline-step p { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-mid); }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .faq-question {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 0; cursor: pointer; gap: 16px;
+      font-family: var(--font-display); font-size: 1.2rem; color: var(--teal);
+      transition: color 0.3s ease;
+    }
+    .faq-question:hover { color: var(--gold); }
+    .faq-question__icon { font-size: 1.2rem; color: var(--gold); flex-shrink: 0; transition: transform 0.3s ease; }
+    .faq-item.open .faq-question__icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 400px; }
+    .faq-answer p { padding: 0 0 24px; color: var(--text-mid); line-height: 1.8; font-size: 0.95rem; }
+
+    @media (max-width: 1024px) {
+      .process-stage { grid-template-columns: 1fr; gap: 40px; }
+      .process-stage:nth-child(even) .process-stage__content,
+      .process-stage:nth-child(even) .process-stage__visual { order: unset; }
+      .process-stage__num-badge { right: -12px; bottom: -12px; width: 64px; height: 64px; font-size: 1.5rem; }
+      .timeline-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo"><img src="images/logo.jpg" alt="Kensora" /></a>
+    <ul class="navbar__nav">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="portfolio.html#living">Living Spaces</a><a href="portfolio.html#bedroom">Bedrooms</a>
+          <a href="portfolio.html#kitchen">Kitchens</a>
+        </div>
+      </li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="process.html" class="active">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown"><a href="blog.html">All Stories</a></div>
+      </li>
+    </ul>
+    <div class="navbar__cta"><a href="contact.html" class="btn btn-primary">Book Consultation</a></div>
+    <div class="navbar__hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials</a><a href="process.html">Our Process</a>
+  <a href="about.html">About</a><a href="blog.html">Stories</a>
+  <a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<section class="page-hero" style="padding-top:var(--nav-h);">
+  <img class="page-hero__bg" src="images/about-designer.png" alt="Kensora Design Process" />
+  <div class="container">
+    <p class="subheading">The Journey</p>
+    <h1 class="heading-1" style="color:var(--off-white);font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);">A Process Refined to Perfection</h1>
+    <p>Six carefully orchestrated stages — each one designed to ensure your vision is heard, refined and realised with extraordinary precision.</p>
+  </div>
+</section>
+
+<!-- TIMELINE NAV -->
+<div class="timeline-bar">
+  <div class="container">
+    <div class="timeline-inner">
+      <div class="timeline-step active"><div class="timeline-step__dot">1</div><p>Discovery</p></div>
+      <div class="timeline-step"><div class="timeline-step__dot">2</div><p>Concept</p></div>
+      <div class="timeline-step"><div class="timeline-step__dot">3</div><p>Materials</p></div>
+      <div class="timeline-step"><div class="timeline-step__dot">4</div><p>Prototype</p></div>
+      <div class="timeline-step"><div class="timeline-step__dot">5</div><p>Execution</p></div>
+      <div class="timeline-step"><div class="timeline-step__dot">6</div><p>Handover</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- STAGES -->
+<section class="section">
+  <div class="container">
+
+    <div class="process-stage reveal">
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/about-designer.png" alt="Discovery Consultation" loading="lazy" />
+        <div class="process-stage__num-badge">01<small>Stage</small></div>
+      </div>
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 01</p>
+        <h2>Discovery & Vision</h2>
+        <p>Every Kensora project begins with deep listening. Our Design Director conducts an immersive discovery session — exploring your lifestyle, aesthetic sensibilities, functional needs and spatial aspirations.</p>
+        <p>We study how you live, what inspires you, how you entertain, and what matters most to you in a home. This session forms the foundation of everything that follows.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>Lifestyle Questionnaire & Vision Brief</li>
+            <li>Space Measurement Survey</li>
+            <li>Preliminary Mood References</li>
+            <li>Scope & Timeline Overview</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="process-stage reveal">
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 02</p>
+        <h2>Concept Design & Visualisation</h2>
+        <p>Our design team translates your vision into a detailed concept — spatial layouts, elevation designs, material mood boards and photorealistic 3D renderings that allow you to see your space before a single wall is touched.</p>
+        <p>We iterate collaboratively, refining every detail until the design is exactly right — no compromises, no rushing.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>2D Floor Plans & Elevation Drawings</li>
+            <li>Photorealistic 3D Renders (each room)</li>
+            <li>Material Mood Board</li>
+            <li>Furniture & Lighting Concept</li>
+          </ul>
+        </div>
+      </div>
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/brand-mockup.jpg" alt="Design Concept" loading="lazy" />
+        <div class="process-stage__num-badge">02<small>Stage</small></div>
+      </div>
+    </div>
+
+    <div class="process-stage reveal">
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/materials-hero.png" alt="Material Selection" loading="lazy" />
+        <div class="process-stage__num-badge">03<small>Stage</small></div>
+      </div>
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 03</p>
+        <h2>Material Selection</h2>
+        <p>You are invited to our materials studio for a tactile, immersive selection session. Our curators walk you through the finest materials from our library — marble slabs, veneer panels, fabric swatches, metal finishes and glass samples.</p>
+        <p>We provide clear guidance on the character, maintenance and long-term beauty of each material to help you make confident, informed choices.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>Personalised Material Sample Kit</li>
+            <li>Material Application Plan</li>
+            <li>Maintenance & Care Guide</li>
+            <li>Sourcing & Origin Certificates</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="process-stage reveal">
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 04</p>
+        <h2>Prototyping & Approval</h2>
+        <p>Before full production begins, we fabricate physical prototypes of key bespoke elements — a wardrobe door, a cabinet finish sample, an upholstery mock-up. This critical stage ensures every texture, colour and finish is exactly as approved.</p>
+        <p>Only after your explicit sign-off on all prototypes does production commence. Zero surprises at handover.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>Physical Finish Samples On-site</li>
+            <li>Mock-up of Key Bespoke Elements</li>
+            <li>Final Material & Colour Confirmation</li>
+            <li>Revised 3D if Any Changes Made</li>
+          </ul>
+        </div>
+      </div>
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/portfolio-kitchen.png" alt="Prototyping" loading="lazy" />
+        <div class="process-stage__num-badge">04<small>Stage</small></div>
+      </div>
+    </div>
+
+    <div class="process-stage reveal">
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/hero.png" alt="Execution" loading="lazy" />
+        <div class="process-stage__num-badge">05<small>Stage</small></div>
+      </div>
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 05</p>
+        <h2>Execution & Craftsmanship</h2>
+        <p>With all approvals secured, our master artisans and site team move into action. Every stage of on-site work is supervised by a dedicated Quality Manager, with weekly progress reports and site visits available by appointment.</p>
+        <p>Our guild of craftsmen — carpenters, stone masons, upholsterers, painters and electricians — work in precise coordination, reflecting decades of collective experience.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>Dedicated Project Manager</li>
+            <li>Weekly Progress Reports with Photos</li>
+            <li>Quality Inspection at Each Milestone</li>
+            <li>Transparent Site Access Throughout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="process-stage reveal">
+      <div class="process-stage__content">
+        <p class="process-stage__label">Stage 06</p>
+        <h2>Handover & Aftercare</h2>
+        <p>The final reveal is a curated experience — we style your space with art, plants and accessories, then walk you through your home in its complete glory. Your dedicated account manager remains on hand for any post-handover queries.</p>
+        <p>Our 5-year craftsmanship warranty and annual aftercare programme ensure your Kensora interior retains its extraordinary quality for years to come.</p>
+        <div class="process-deliverables">
+          <h4>You Receive</h4>
+          <ul>
+            <li>Styled Home Reveal Experience</li>
+            <li>Comprehensive Warranty Documentation</li>
+            <li>Material Care & Maintenance Manual</li>
+            <li>Annual Aftercare Programme</li>
+          </ul>
+        </div>
+      </div>
+      <div class="process-stage__visual">
+        <img class="process-stage__img" src="images/portfolio-bedroom.png" alt="Handover" loading="lazy" />
+        <div class="process-stage__num-badge">06<small>Stage</small></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--cream">
+  <div class="container" style="max-width:860px;">
+    <div class="section-header reveal">
+      <p class="subheading">Common Questions</p>
+      <h2 class="heading-1">Frequently Asked Questions</h2>
+      <div class="gold-rule"></div>
+    </div>
+    <div class="reveal">
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentNode.classList.toggle('open')">
+          How long does a full home interior project typically take?
+          <span class="faq-question__icon">+</span>
+        </div>
+        <div class="faq-answer"><p>A full-home interior project (2,000–4,000 sq.ft) typically takes 14–20 weeks from design approval to handover. Larger estates or projects with significant custom fabrication may require 24–32 weeks. We provide a detailed project timeline at the end of the Concept Design stage.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentNode.classList.toggle('open')">
+          Can I stay in my home during construction?
+          <span class="faq-question__icon">+</span>
+        </div>
+        <div class="faq-answer"><p>For major renovations, we recommend vacating for at least 60–70% of the construction phase for comfort and safety. For single-room or kitchen projects, it is usually possible to remain. Our project manager will advise you on a room-by-room work schedule to minimise disruption.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentNode.classList.toggle('open')">
+          What is included in the design fee?
+          <span class="faq-question__icon">+</span>
+        </div>
+        <div class="faq-answer"><p>Our design fee covers all concept development, 3D visualisations, technical drawings, material selection guidance and on-site supervision. The design fee is typically 8–12% of the total project value and is kept separate from material and fabrication costs for full transparency.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentNode.classList.toggle('open')">
+          Do you work outside Bengaluru?
+          <span class="faq-question__icon">+</span>
+        </div>
+        <div class="faq-answer"><p>Yes. Kensora has delivered projects across Mumbai, Hyderabad, Chennai, Delhi/NCR, Pune, Goa and other Indian cities. For outstation projects, we station a dedicated site supervisor locally for the full duration of execution. Travel costs are factored into the project proposal.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentNode.classList.toggle('open')">
+          What is your payment structure?
+          <span class="faq-question__icon">+</span>
+        </div>
+        <div class="faq-answer"><p>Payments are milestone-based: 20% at design sign-off, 30% at material procurement, 30% at 60% execution completion, and the final 20% at handover. This structure protects both parties and aligns payment with measurable progress at every stage.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--teal);padding:100px 0;text-align:center;">
+  <div class="container">
+    <p class="subheading reveal">Ready to Begin?</p>
+    <h2 class="heading-1 reveal reveal-delay-1" style="color:var(--cream);font-family:var(--font-display);margin:16px 0 20px;">Let's Start Your Journey</h2>
+    <p class="reveal reveal-delay-2" style="color:rgba(245,240,232,0.7);max-width:520px;margin:0 auto 36px;font-size:1.05rem;line-height:1.8;">Schedule a complimentary discovery call with our Design Director — no obligations, just a conversation about your vision.</p>
+    <a href="contact.html" class="btn btn-primary reveal reveal-delay-3">Book Your Free Consultation</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a><a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a><a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Quick Links</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li><li><a href="materials.html">Materials</a></li>
+        <li><a href="process.html">Our Process</a></li><li><a href="about.html">About Us</a></li>
+        <li><a href="blog.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>The Process</h4><ul>
+        <li><a href="#">Stage 1: Discovery</a></li><li><a href="#">Stage 2: Concept</a></li>
+        <li><a href="#">Stage 3: Materials</a></li><li><a href="#">Stage 4: Prototype</a></li>
+        <li><a href="#">Stage 5: Execution</a></li><li><a href="#">Stage 6: Handover</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Contact Us</h4>
+        <div class="footer__contact-item"><div class="footer__contact-icon">✉</div><span>kensora@kalakruthi.com</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">☎</div><span>+91 98765 43210</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">⊹</div><span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards"><span class="footer__award-badge">India Design Award 2024</span><span class="footer__award-badge">Luxury Interior Guild</span></div>
+      <div class="footer__legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+</body>
+</html>

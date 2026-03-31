@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Kensora by Kalakruthi</title>
+  <meta name="description" content="Explore Kensora's portfolio of ultra-premium interior design projects — villas, full homes, kitchens, bedrooms, offices and commercial spaces across India." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    /* ── Filters ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin-bottom: 48px;
+    }
+    .filter-btn {
+      padding: 10px 24px; border-radius: 100px;
+      border: 1px solid rgba(181,154,106,0.3);
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-mid); background: transparent;
+      cursor: pointer; transition: var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--teal); color: var(--gold); border-color: var(--teal);
+    }
+    /* ── Portfolio Grid ── */
+    .portfolio-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .portfolio-item { border-radius: var(--radius-lg); overflow: hidden; }
+    .portfolio-item--large { grid-column: span 2; }
+    .portfolio-item__trigger {
+      display: block; position: relative; overflow: hidden;
+      cursor: pointer; width: 100%;
+      aspect-ratio: 4/3;
+    }
+    .portfolio-item--large .portfolio-item__trigger { aspect-ratio: 16/9; }
+    .portfolio-item__trigger img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .portfolio-item__trigger:hover img { transform: scale(1.06); }
+    .portfolio-item__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(18,37,53,0.9) 0%, rgba(18,37,53,0.0) 55%);
+      opacity: 0; transition: opacity 0.4s ease;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 24px;
+    }
+    .portfolio-item__trigger:hover .portfolio-item__overlay { opacity: 1; }
+    .portfolio-item__cat { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .portfolio-item__title { font-family: var(--font-display); font-size: 1.3rem; color: var(--cream); margin-bottom: 4px; }
+    .portfolio-item__loc { font-size: 0.8rem; color: rgba(245,240,232,0.65); }
+    .portfolio-item__expand {
+      position: absolute; top: 16px; right: 16px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(181,154,106,0.9); color: var(--charcoal);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .portfolio-item__trigger:hover .portfolio-item__expand { opacity: 1; }
+
+    /* ── Lightbox ── */
+    #portfolioLightbox {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(12,22,30,0.96); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+      padding: 40px;
+    }
+    #portfolioLightbox.open { display: flex; }
+    .lightbox__inner {
+      background: var(--teal-dark); border-radius: var(--radius-lg);
+      overflow: hidden; max-width: 960px; width: 100%;
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      box-shadow: var(--shadow-lg);
+    }
+    #lightboxImg { width: 100%; height: 480px; object-fit: cover; }
+    .lightbox__info { padding: 40px 36px; display: flex; flex-direction: column; justify-content: center; }
+    .lightbox__info .subheading { margin-bottom: 12px; }
+    #lightboxTitle { font-family: var(--font-display); font-size: 2rem; color: var(--cream); margin-bottom: 16px; }
+    #lightboxDesc { font-size: 0.9rem; color: rgba(245,240,232,0.7); line-height: 1.7; margin-bottom: 28px; }
+    #lightboxClose {
+      position: absolute; top: 24px; right: 32px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); color: var(--cream);
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: var(--transition); border: 1px solid rgba(255,255,255,0.2);
+    }
+    #lightboxClose:hover { background: var(--gold); color: var(--charcoal); }
+
+    @media (max-width: 1024px) {
+      .portfolio-grid { grid-template-columns: repeat(2,1fr); }
+      .portfolio-item--large { grid-column: span 1; }
+      .lightbox__inner { grid-template-columns: 1fr; }
+      #lightboxImg { height: 300px; }
+    }
+    @media (max-width: 640px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo"><img src="images/logo.jpg" alt="Kensora" /></a>
+    <ul class="navbar__nav">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="#living">Living Spaces</a><a href="#bedroom">Bedrooms</a>
+          <a href="#kitchen">Kitchens</a><a href="#office">Home Office</a><a href="#villa">Villas & Estates</a>
+        </div>
+      </li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="process.html">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown"><a href="blog.html">All Stories</a></div>
+      </li>
+    </ul>
+    <div class="navbar__cta"><a href="contact.html" class="btn btn-primary">Book Consultation</a></div>
+    <div class="navbar__hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials</a><a href="process.html">Our Process</a>
+  <a href="about.html">About</a><a href="blog.html">Stories</a>
+  <a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<section class="page-hero" style="padding-top:var(--nav-h);">
+  <img class="page-hero__bg" src="images/hero.png" alt="Kensora Portfolio" />
+  <div class="container">
+    <p class="subheading">Our Work</p>
+    <h1 class="heading-1" style="color:var(--off-white);font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);">Every Space, a Masterpiece</h1>
+    <p>360+ projects across villas, residences, kitchens, offices and hospitality spaces — each one a unique testament to exceptional craft.</p>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="section">
+  <div class="container">
+    <div class="filter-bar reveal">
+      <button class="filter-btn active" data-filter="all">All Projects</button>
+      <button class="filter-btn" data-filter="living">Living Spaces</button>
+      <button class="filter-btn" data-filter="bedroom">Bedrooms</button>
+      <button class="filter-btn" data-filter="kitchen">Kitchens</button>
+      <button class="filter-btn" data-filter="office">Office</button>
+      <button class="filter-btn" data-filter="villa">Villas</button>
+      <button class="filter-btn" data-filter="commercial">Commercial</button>
+    </div>
+
+    <div class="portfolio-grid reveal">
+
+      <div class="portfolio-item portfolio-item--large" data-category="villa" id="villa">
+        <div class="portfolio-item__trigger"
+          data-img="images/hero.png"
+          data-title="Serene Hilltop Estate"
+          data-desc="A 6,200 sq.ft villa in Bengaluru designed with Carrara marble, aged teak panels and hand-knotted silk rugs. Every corner narrates the story of its inhabitants.">
+          <img src="images/hero.png" alt="Serene Hilltop Estate" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Villa Interior</p>
+            <p class="portfolio-item__title">Serene Hilltop Estate</p>
+            <p class="portfolio-item__loc">Bengaluru · 6,200 sq.ft</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="bedroom" id="bedroom">
+        <div class="portfolio-item__trigger"
+          data-img="images/portfolio-bedroom.png"
+          data-title="Ivory Retreat Suite"
+          data-desc="A master bedroom suite in warm teak veneer, oyster silk drapes and bespoke hand-upholstered headboard — a sanctuary of refined calm.">
+          <img src="images/portfolio-bedroom.png" alt="Ivory Retreat" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Master Bedroom</p>
+            <p class="portfolio-item__title">Ivory Retreat Suite</p>
+            <p class="portfolio-item__loc">Hyderabad</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="kitchen" id="kitchen">
+        <div class="portfolio-item__trigger"
+          data-img="images/portfolio-kitchen.png"
+          data-title="Marble & Teal Kitchen"
+          data-desc="A premium modular kitchen featuring Bianco Statuario marble, handleless deep teal cabinetry and brass pendant lights over a central island.">
+          <img src="images/portfolio-kitchen.png" alt="Marble Kitchen" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Modular Kitchen</p>
+            <p class="portfolio-item__title">Marble & Teal Kitchen</p>
+            <p class="portfolio-item__loc">Chennai</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="office" id="office">
+        <div class="portfolio-item__trigger"
+          data-img="images/portfolio-office.png"
+          data-title="The Executive Study"
+          data-desc="A home office designed for a senior executive — custom teal shelving, hand-oiled walnut desk and premium leather seating with floor-to-ceiling windows.">
+          <img src="images/portfolio-office.png" alt="Executive Study" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Home Office</p>
+            <p class="portfolio-item__title">The Executive Study</p>
+            <p class="portfolio-item__loc">Mumbai</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item portfolio-item--large" data-category="living" id="living">
+        <div class="portfolio-item__trigger"
+          data-img="images/hero.png"
+          data-title="The Grand Drawing Room"
+          data-desc="A sprawling drawing room with double-height ceilings, custom chandelier and a statement teal accent wall with gilded boiserie detailing.">
+          <img src="images/hero.png" alt="Grand Drawing Room" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Living Room</p>
+            <p class="portfolio-item__title">The Grand Drawing Room</p>
+            <p class="portfolio-item__loc">Bengaluru · Penthouse</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="commercial" id="commercial">
+        <div class="portfolio-item__trigger"
+          data-img="images/brand-mockup.jpg"
+          data-title="Kensora Design Studio"
+          data-desc="Our own studio space — a showcase of material excellence, spatial drama and applied craftsmanship. Available for private viewings.">
+          <img src="images/brand-mockup.jpg" alt="Kensora Studio" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Design Studio</p>
+            <p class="portfolio-item__title">Kensora Design Studio</p>
+            <p class="portfolio-item__loc">Bengaluru</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="bedroom">
+        <div class="portfolio-item__trigger"
+          data-img="images/portfolio-bedroom.png"
+          data-title="The Walnut Cocoon"
+          data-desc="A guest bedroom cocooned in rich American walnut veneer with integrated ambient lighting and hand-stitched cotton linen.">
+          <img src="images/portfolio-bedroom.png" alt="Walnut Bedroom" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Guest Bedroom</p>
+            <p class="portfolio-item__title">The Walnut Cocoon</p>
+            <p class="portfolio-item__loc">Pune</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+      <div class="portfolio-item" data-category="kitchen">
+        <div class="portfolio-item__trigger"
+          data-img="images/portfolio-kitchen.png"
+          data-title="Obsidian Kitchen"
+          data-desc="A bold black-and-brass kitchen in nero marquina marble with custom brass drawer pulls and integrated appliance concealment.">
+          <img src="images/portfolio-kitchen.png" alt="Obsidian Kitchen" loading="lazy" />
+          <div class="portfolio-item__overlay">
+            <p class="portfolio-item__cat">Premium Kitchen</p>
+            <p class="portfolio-item__title">Obsidian Kitchen</p>
+            <p class="portfolio-item__loc">Delhi</p>
+          </div>
+          <div class="portfolio-item__expand">+</div>
+        </div>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:56px;" class="reveal">
+      <a href="contact.html" class="btn btn-primary">Start Your Project</a>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="portfolioLightbox" role="dialog" aria-modal="true">
+  <div class="lightbox__inner">
+    <img id="lightboxImg" src="" alt="Project detail" />
+    <div class="lightbox__info">
+      <p class="subheading">Project Detail</p>
+      <h2 id="lightboxTitle"></h2>
+      <p id="lightboxDesc"></p>
+      <a href="contact.html" class="btn btn-primary">Enquire About This Project</a>
+    </div>
+  </div>
+  <button id="lightboxClose" aria-label="Close">&#10005;</button>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a><a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a><a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Quick Links</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li><li><a href="materials.html">Materials</a></li>
+        <li><a href="process.html">Our Process</a></li><li><a href="about.html">About Us</a></li>
+        <li><a href="blog.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Portfolio</h4><ul>
+        <li><a href="#villa">Villas & Estates</a></li><li><a href="#living">Living Rooms</a></li>
+        <li><a href="#bedroom">Bedrooms</a></li><li><a href="#kitchen">Kitchens</a></li>
+        <li><a href="#office">Home Office</a></li><li><a href="#commercial">Commercial</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Contact Us</h4>
+        <div class="footer__contact-item"><div class="footer__contact-icon">✉</div><span>kensora@kalakruthi.com</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">☎</div><span>+91 98765 43210</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">⊹</div><span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards"><span class="footer__award-badge">India Design Award 2024</span><span class="footer__award-badge">Luxury Interior Guild</span></div>
+      <div class="footer__legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+<script src="js/portfolio.js"></script>
+</body>
+</html>

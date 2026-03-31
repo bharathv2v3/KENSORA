@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Kensora by Kalakruthi</title>
+  <meta name="description" content="Kensora offers full-home interiors, modular kitchens, bespoke wardrobes, commercial spaces and turnkey luxury projects across India." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    .services-hero { background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%); }
+    /* ── Service Cards ── */
+    .service-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm);
+      transition: var(--transition); display: flex; flex-direction: column;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .service-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .service-card__img { height: 260px; overflow: hidden; position: relative; }
+    .service-card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .service-card:hover .service-card__img img { transform: scale(1.07); }
+    .service-card__img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(18,37,53,0.6), transparent 60%);
+    }
+    .service-card__body { padding: 32px; flex: 1; display: flex; flex-direction: column; }
+    .service-card__icon {
+      width: 52px; height: 52px;
+      background: rgba(181,154,106,0.12); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 20px; color: var(--gold);
+    }
+    .service-card h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--teal); margin-bottom: 12px; }
+    .service-card p { color: var(--text-mid); line-height: 1.75; font-size: 0.93rem; margin-bottom: 20px; flex: 1; }
+    .service-card__features { margin-bottom: 24px; }
+    .service-card__features li {
+      font-size: 0.82rem; color: var(--text-mid); padding: 6px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .service-card__features li::before { content: '◆'; font-size: 0.5rem; color: var(--gold); flex-shrink: 0; }
+    .service-card a { margin-top: auto; }
+
+    /* ── Why Kensora ── */
+    .why-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .why-item {
+      padding: 48px 36px; background: var(--teal);
+      text-align: center; border: 1px solid rgba(181,154,106,0.1);
+      transition: var(--transition);
+    }
+    .why-item:hover { background: var(--teal-light); }
+    .why-item__icon { font-size: 2.5rem; margin-bottom: 20px; color: var(--gold); }
+    .why-item h3 { font-family: var(--font-display); font-size: 1.3rem; color: var(--cream); margin-bottom: 12px; }
+    .why-item p { font-size: 0.88rem; color: rgba(245,240,232,0.65); line-height: 1.7; }
+
+    /* ── Packages ── */
+    .packages { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .package {
+      border: 1px solid rgba(181,154,106,0.2); border-radius: var(--radius-lg);
+      padding: 40px 32px; text-align: center; position: relative;
+      transition: var(--transition); background: var(--white);
+    }
+    .package--featured {
+      background: var(--teal); color: var(--cream);
+      border-color: var(--gold); box-shadow: var(--shadow-gold);
+      transform: translateY(-12px);
+    }
+    .package__badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--charcoal);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 5px 20px; border-radius: 100px;
+    }
+    .package h3 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 8px; }
+    .package--featured h3 { color: var(--cream); }
+    .package__price {
+      font-family: var(--font-display); font-size: 3rem; font-weight: 300;
+      color: var(--gold); margin: 16px 0 4px; line-height: 1;
+    }
+    .package__per { font-size: 0.78rem; color: var(--text-light); margin-bottom: 28px; }
+    .package--featured .package__per { color: rgba(245,240,232,0.6); }
+    .package__features { text-align: left; margin-bottom: 28px; }
+    .package__features li {
+      padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.85rem; color: var(--text-mid);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .package--featured .package__features li { color: rgba(245,240,232,0.8); border-color: rgba(255,255,255,0.08); }
+    .package__features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+    @media (max-width: 1024px) {
+      .why-grid { grid-template-columns: repeat(2,1fr); }
+      .packages { grid-template-columns: 1fr; }
+      .package--featured { transform: none; }
+    }
+    @media (max-width: 640px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo"><img src="images/logo.jpg" alt="Kensora" /></a>
+    <ul class="navbar__nav">
+      <li><a href="services.html" class="active">Services</a></li>
+      <li><a href="portfolio.html">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="portfolio.html#living">Living Spaces</a><a href="portfolio.html#bedroom">Bedrooms</a>
+          <a href="portfolio.html#kitchen">Kitchens</a><a href="portfolio.html#office">Home Office</a>
+          <a href="portfolio.html#villa">Villas & Estates</a>
+        </div>
+      </li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="process.html">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown"><a href="blog.html">All Stories</a><a href="blog.html#trends">Design Trends</a></div>
+      </li>
+    </ul>
+    <div class="navbar__cta"><a href="contact.html" class="btn btn-primary">Book Consultation</a></div>
+    <div class="navbar__hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials</a><a href="process.html">Our Process</a><a href="about.html">About</a>
+  <a href="blog.html">Stories</a><a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero services-hero" style="padding-top:var(--nav-h);">
+  <img class="page-hero__bg" src="images/hero.png" alt="Kensora Services" />
+  <div class="container">
+    <p class="subheading">What We Offer</p>
+    <h1 class="heading-1" style="color:var(--off-white);font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);">Crafted for Every Vision</h1>
+    <p>From a single room to an entire estate — our expertise spans the full spectrum of premium interior design.</p>
+  </div>
+</section>
+
+<!-- SERVICE CARDS -->
+<section class="section" id="services-grid">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="subheading">Our Expertise</p>
+      <h2 class="heading-1">Signature Services</h2>
+      <div class="gold-rule"></div>
+      <p>Every service is delivered with Kensora's hallmark of exclusive materials, extraordinary craftsmanship and meticulous attention to detail.</p>
+    </div>
+    <div class="grid-3">
+      <div class="service-card reveal" id="full-home">
+        <div class="service-card__img">
+          <img src="images/hero.png" alt="Full Home Interiors" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">⌂</div>
+          <h3>Full-Home Interiors</h3>
+          <p>A holistic design of every room, corridor, and surface — creating a seamless narrative throughout your home with premium materials and master craftsmanship.</p>
+          <ul class="service-card__features">
+            <li>3D Walkthrough Visualization</li>
+            <li>Custom Furniture Design</li>
+            <li>Lighting Architecture</li>
+            <li>Material Curation & Selection</li>
+            <li>On-site Quality Supervision</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2" id="kitchen">
+        <div class="service-card__img">
+          <img src="images/portfolio-kitchen.png" alt="Modular Kitchen" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">◈</div>
+          <h3>Luxury Modular Kitchens</h3>
+          <p>Italian-inspired kitchen systems with handleless cabinetry, premium countertops, and intelligent storage — the heart of your home, perfected.</p>
+          <ul class="service-card__features">
+            <li>German Hinges & Soft-Close Fittings</li>
+            <li>Marble & Quartz Countertops</li>
+            <li>Handleless & Push-to-Open Systems</li>
+            <li>Integrated Appliance Panels</li>
+            <li>Custom Island Design</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-4" id="wardrobe">
+        <div class="service-card__img">
+          <img src="images/portfolio-bedroom.png" alt="Wardrobes & Storage" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">◫</div>
+          <h3>Wardrobes & Storage</h3>
+          <p>Bespoke walk-in closets and fitted wardrobes in fine veneer, lacquer and glass — combining couture aesthetics with intelligent organization.</p>
+          <ul class="service-card__features">
+            <li>Walk-in Wardrobe Design</li>
+            <li>LED Interior Lighting</li>
+            <li>Custom Drawer Inserts</li>
+            <li>Mirror & Glass Panels</li>
+            <li>Shoe & Accessory Systems</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+
+      <div class="service-card reveal" id="commercial">
+        <div class="service-card__img">
+          <img src="images/portfolio-office.png" alt="Commercial Interiors" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">✦</div>
+          <h3>Commercial Interiors</h3>
+          <p>Offices, restaurants, boutique hotels and retail spaces — we craft commercial environments that project authority, elegance and brand identity.</p>
+          <ul class="service-card__features">
+            <li>Brand-Aligned Design Language</li>
+            <li>Workspace Ergonomics Planning</li>
+            <li>Hospitality & F&B Specialization</li>
+            <li>MEP Coordination</li>
+            <li>Turnkey Delivery</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2" id="turnkey">
+        <div class="service-card__img">
+          <img src="images/brand-mockup.jpg" alt="Turnkey Projects" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">⊹</div>
+          <h3>Turnkey Projects</h3>
+          <p>Complete project management from bare shell to handover — architecture, interior design, procurement, execution, and styling under one seamless umbrella.</p>
+          <ul class="service-card__features">
+            <li>Single Point of Responsibility</li>
+            <li>Architect + Interior Coordination</li>
+            <li>Custom Procurement Management</li>
+            <li>Timeline & Budget Control</li>
+            <li>White-Glove Handover</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-4" id="renovation">
+        <div class="service-card__img">
+          <img src="images/materials-hero.png" alt="Renovation" loading="lazy" />
+          <div class="service-card__img-overlay"></div>
+        </div>
+        <div class="service-card__body">
+          <div class="service-card__icon">◉</div>
+          <h3>Renovation & Refresh</h3>
+          <p>Transform an existing space with precision — new materials, updated spatial configurations, and refined finishes that breathe new life into your home.</p>
+          <ul class="service-card__features">
+            <li>Space Reconfiguration</li>
+            <li>Material & Finish Upgrade</li>
+            <li>Structural Works if Required</li>
+            <li>Minimal Disruption Approach</li>
+            <li>Styling & Art Curation</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Get a Quote</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY KENSORA -->
+<section class="section section--dark" style="padding:0;">
+  <div class="container" style="padding:0;max-width:100%;">
+    <div style="text-align:center;padding:64px 40px 48px;" class="reveal">
+      <p class="subheading">Why Kensora</p>
+      <h2 class="heading-1" style="color:var(--cream);">The Kensora Difference</h2>
+      <div class="gold-rule"></div>
+    </div>
+    <div class="why-grid">
+      <div class="why-item reveal">
+        <div class="why-item__icon">◈</div>
+        <h3>Exclusive Material Access</h3>
+        <p>Private sourcing relationships with Italy, Spain and India's finest suppliers give our clients access to materials unavailable elsewhere.</p>
+      </div>
+      <div class="why-item reveal reveal-delay-1">
+        <div class="why-item__icon">✦</div>
+        <h3>Master Guild Artisans</h3>
+        <p>Our team of 80+ trained artisans holds skills passed down through generations — from marquetry to bespoke upholstery.</p>
+      </div>
+      <div class="why-item reveal reveal-delay-2">
+        <div class="why-item__icon">⊹</div>
+        <h3>Zero Compromise Policy</h3>
+        <p>We don't use templates or off-the-shelf solutions. Every element is designed and fabricated specifically for your space.</p>
+      </div>
+      <div class="why-item reveal reveal-delay-1">
+        <div class="why-item__icon">◉</div>
+        <h3>Transparent Pricing</h3>
+        <p>Detailed line-item quotations with no hidden costs. You know exactly what you're paying for and why.</p>
+      </div>
+      <div class="why-item reveal reveal-delay-2">
+        <div class="why-item__icon">◫</div>
+        <h3>Dedicated Project Manager</h3>
+        <p>A single point of contact manages your project from first sketch to final reveal, ensuring flawless execution.</p>
+      </div>
+      <div class="why-item reveal reveal-delay-3">
+        <div class="why-item__icon">★</div>
+        <h3>5-Year Craftsmanship Warranty</h3>
+        <p>We stand firmly behind our work with a comprehensive five-year warranty on all fabricated elements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="section section--cream">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="subheading">Investment Guide</p>
+      <h2 class="heading-1">Design Packages</h2>
+      <div class="gold-rule"></div>
+      <p>Tailored packages to suit the scale and ambition of every project. All packages include dedicated design consultation.</p>
+    </div>
+    <div class="packages">
+      <div class="package reveal">
+        <h3>Signature</h3>
+        <div class="package__price">₹2,200</div>
+        <p class="package__per">per sq.ft onwards</p>
+        <ul class="package__features">
+          <li>2D Drawings + 3D Renders</li>
+          <li>Curated Material Selection</li>
+          <li>Modular Furniture</li>
+          <li>Lighting Design</li>
+          <li>2-Year Warranty</li>
+          <li>Project Manager</li>
+        </ul>
+        <a href="contact.html" class="btn btn-outline" style="width:100%;justify-content:center;">Get Started</a>
+      </div>
+      <div class="package package--featured reveal reveal-delay-2">
+        <div class="package__badge">Most Popular</div>
+        <h3>Prestige</h3>
+        <div class="package__price">₹3,800</div>
+        <p class="package__per">per sq.ft onwards</p>
+        <ul class="package__features">
+          <li>Full 3D Walkthrough Visualization</li>
+          <li>Exclusive Material Library Access</li>
+          <li>Bespoke Furniture Design</li>
+          <li>Lighting Architecture Plan</li>
+          <li>Art & Styling Curation</li>
+          <li>Dedicated Design Director</li>
+          <li>3-Year Warranty</li>
+        </ul>
+        <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">Get Started</a>
+      </div>
+      <div class="package reveal reveal-delay-4">
+        <h3>Grand Atelier</h3>
+        <div class="package__price">Custom</div>
+        <p class="package__per">bespoke pricing</p>
+        <ul class="package__features">
+          <li>Fully Bespoke Everything</li>
+          <li>Rare & Private Material Sourcing</li>
+          <li>Turnkey Project Management</li>
+          <li>International Design References</li>
+          <li>White-Glove Handover Service</li>
+          <li>Styling + Art + Plants Included</li>
+          <li>5-Year Comprehensive Warranty</li>
+        </ul>
+        <a href="contact.html" class="btn btn-dark" style="width:100%;justify-content:center;">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora by Kalakruthi" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a><a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a><a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col"><h4>Quick Links</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li><li><a href="materials.html">Materials</a></li>
+        <li><a href="process.html">Our Process</a></li><li><a href="about.html">About Us</a></li>
+        <li><a href="blog.html">Stories</a></li><li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Services</h4><ul>
+        <li><a href="#full-home">Full-Home Interiors</a></li><li><a href="#kitchen">Modular Kitchens</a></li>
+        <li><a href="#wardrobe">Wardrobes & Storage</a></li><li><a href="#commercial">Commercial Spaces</a></li>
+        <li><a href="#turnkey">Turnkey Projects</a></li><li><a href="#renovation">Renovation</a></li>
+      </ul></div>
+      <div class="footer__col"><h4>Contact Us</h4>
+        <div class="footer__contact-item"><div class="footer__contact-icon">✉</div><span>kensora@kalakruthi.com</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">☎</div><span>+91 98765 43210</span></div>
+        <div class="footer__contact-item"><div class="footer__contact-icon">⊹</div><span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards"><span class="footer__award-badge">India Design Award 2024</span><span class="footer__award-badge">Luxury Interior Guild</span></div>
+      <div class="footer__legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+<script src="js/main.js"></script>
+</body>
+</html>
