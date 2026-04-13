@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice — Kensora by Kalakruthi</title>
+  <meta name="description" content="Generate and print a professional invoice on Kensora by Kalakruthi letterhead." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <style>
+    /* ══════════════════════════════════════════
+       INVOICE PAGE — Screen Styles
+    ══════════════════════════════════════════ */
+
+    body { background: var(--cream); }
+
+    /* ── Page Hero ── */
+    .invoice-hero {
+      background: var(--teal-dark);
+      padding: 120px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .invoice-hero::before {
+      content: 'INVOICE';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: var(--font-display); font-size: 18vw; font-weight: 700;
+      color: rgba(255,255,255,0.03); white-space: nowrap;
+      letter-spacing: -0.04em; pointer-events: none;
+    }
+    .invoice-hero .container { position: relative; z-index: 2; }
+    .invoice-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300; color: var(--cream);
+      margin: 12px 0 8px;
+    }
+    .invoice-hero p { color: rgba(245,240,232,0.65); font-size: 1.05rem; }
+
+    /* ── Toolbar ── */
+    .invoice-toolbar {
+      background: var(--white);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      padding: 16px 0;
+      position: sticky; top: 0; z-index: 99;
+      box-shadow: var(--shadow-sm);
+    }
+    .invoice-toolbar .container {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .invoice-toolbar-label {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-light);
+      margin-right: auto;
+    }
+
+    /* ── Invoice wrapper ── */
+    .invoice-wrapper {
+      padding: 60px 0 100px;
+    }
+    .invoice-wrapper .container {
+      max-width: 900px;
+    }
+
+    /* ══════════════════════════════════════════
+       INVOICE DOCUMENT
+    ══════════════════════════════════════════ */
+    #invoiceDoc {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      padding: 0;
+    }
+
+    /* ── Letterhead Header ── */
+    .lh-header {
+      background: var(--teal-dark);
+      padding: 48px 56px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .lh-header::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    }
+    .lh-header__top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 32px;
+    }
+    .lh-logo-block {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .lh-logo-block img {
+      height: 52px; width: auto;
+      filter: brightness(1.1) contrast(1.05);
+    }
+    .lh-tagline {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--gold-light);
+      margin-top: 4px;
+    }
+    .lh-company-addr {
+      text-align: right;
+      font-size: 0.82rem; color: rgba(245,240,232,0.68);
+      line-height: 1.75;
+    }
+    .lh-company-addr strong {
+      display: block; color: var(--cream); font-size: 0.9rem;
+      font-weight: 600; margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+    .lh-invoice-title-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-top: 40px; gap: 24px;
+    }
+    .lh-invoice-word {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 300; color: var(--off-white);
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .lh-invoice-meta {
+      text-align: right; display: flex; flex-direction: column; gap: 6px;
+    }
+    .lh-meta-item {
+      display: flex; gap: 12px; align-items: baseline; justify-content: flex-end;
+    }
+    .lh-meta-item label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(181,154,106,0.7);
+      white-space: nowrap;
+    }
+    .lh-meta-item span,
+    .lh-meta-item input {
+      font-size: 0.9rem; color: var(--cream); font-weight: 500;
+    }
+    .lh-meta-item input {
+      background: transparent;
+      border: none; border-bottom: 1px solid rgba(181,154,106,0.3);
+      outline: none; text-align: right;
+      width: 160px; padding: 2px 0;
+      transition: border-color 0.3s;
+      color: var(--cream);
+    }
+    .lh-meta-item input:focus { border-bottom-color: var(--gold); }
+
+    /* ── Gold Ornament Strip ── */
+    .lh-ornament {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+      padding: 18px 56px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .lh-ornament::before, .lh-ornament::after {
+      content: '◈'; color: rgba(181,154,106,0.4); font-size: 0.7rem;
+    }
+    .lh-ornament-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(181,154,106,0.15), rgba(181,154,106,0.5), rgba(181,154,106,0.15));
+    }
+
+    /* ── Invoice Body ── */
+    .inv-body {
+      padding: 48px 56px;
+    }
+
+    /* Bill To / From / Project */
+    .inv-parties {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;
+      margin-bottom: 48px;
+    }
+    .inv-party {}
+    .inv-party__label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(181,154,106,0.2);
+    }
+    .inv-party [contenteditable="true"] {
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      transition: background 0.2s;
+      display: block;
+    }
+    .inv-party [contenteditable="true"]:hover,
+    .inv-party [contenteditable="true"]:focus {
+      background: rgba(181,154,106,0.06);
+    }
+    .inv-party-name {
+      font-family: var(--font-display); font-size: 1.15rem;
+      font-weight: 500; color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .inv-party-detail {
+      font-size: 0.85rem; color: var(--text-mid); line-height: 1.8;
+    }
+
+    /* ── Line Items Table ── */
+    .inv-table-wrap {
+      margin-bottom: 40px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .inv-table thead th {
+      background: var(--teal);
+      color: var(--gold-light);
+      text-align: left;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 16px 18px;
+    }
+    .inv-table thead th:last-child { text-align: right; }
+    .inv-table thead th:nth-child(3),
+    .inv-table thead th:nth-child(4) { text-align: right; }
+
+    .inv-table tbody tr {
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: background 0.2s;
+    }
+    .inv-table tbody tr:last-child { border-bottom: none; }
+    .inv-table tbody tr:hover { background: rgba(181,154,106,0.03); }
+
+    .inv-table td {
+      padding: 16px 18px;
+      font-size: 0.9rem; color: var(--charcoal);
+      vertical-align: middle;
+    }
+    .inv-table td:nth-child(3),
+    .inv-table td:nth-child(4),
+    .inv-table td:nth-child(5) { text-align: right; }
+
+    .inv-table td [contenteditable="true"] {
+      outline: none; display: block;
+      border-radius: 3px; padding: 2px 6px; margin: -2px -6px;
+      transition: background 0.2s; min-width: 40px;
+    }
+    .inv-table td [contenteditable="true"]:hover,
+    .inv-table td [contenteditable="true"]:focus {
+      background: rgba(181,154,106,0.08);
+    }
+    .inv-table .td-desc { min-width: 200px; }
+    .inv-table .td-qty, .inv-table .td-rate { min-width: 80px; }
+
+    /* Row amount — computed */
+    .inv-table .td-amount {
+      font-weight: 600; color: var(--teal);
+    }
+
+    /* Remove row btn */
+    .inv-table .td-action {
+      width: 36px; text-align: center; padding: 0 8px;
+    }
+    .btn-remove-row {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: var(--text-light);
+      border: 1px solid rgba(0,0,0,0.1);
+      cursor: pointer; transition: var(--transition);
+      background: transparent;
+    }
+    .btn-remove-row:hover { background: #f44336; color: #fff; border-color: #f44336; }
+
+    /* Add row button */
+    .inv-add-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 12px;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold-dark); cursor: pointer;
+      border: none; background: transparent;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .inv-add-row:hover { color: var(--gold); }
+    .inv-add-row-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px dashed var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: var(--transition);
+    }
+    .inv-add-row:hover .inv-add-row-icon {
+      background: var(--gold); color: var(--white);
+      border-style: solid;
+    }
+
+    /* ── Totals ── */
+    .inv-totals-section {
+      display: flex; justify-content: flex-end;
+      margin-bottom: 48px;
+    }
+    .inv-totals {
+      min-width: 320px;
+    }
+    .inv-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.9rem;
+    }
+    .inv-total-row:last-child { border-bottom: none; }
+    .inv-total-row label {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--text-mid);
+    }
+    .inv-total-row .inv-total-val {
+      font-weight: 600; color: var(--charcoal);
+    }
+    .inv-total-row.inv-grand {
+      background: var(--teal);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-top: 8px;
+    }
+    .inv-grand label {
+      color: var(--gold-light); font-size: 0.75rem;
+    }
+    .inv-grand .inv-total-val {
+      font-family: var(--font-display); font-size: 1.5rem;
+      font-weight: 500; color: var(--cream);
+    }
+
+    /* GST selects */
+    .inv-tax-inputs {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .inv-tax-inputs input {
+      width: 80px; padding: 4px 8px; font-size: 0.85rem;
+      border: 1px solid rgba(0,0,0,0.1); border-radius: 4px;
+      text-align: right; outline: none;
+      transition: border-color 0.2s;
+    }
+    .inv-tax-inputs input:focus { border-color: var(--gold); }
+
+    /* ── Notes / Bank Details / Terms ── */
+    .inv-bottom-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      margin-bottom: 56px;
+    }
+    .inv-section-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(181,154,106,0.2);
+    }
+    .inv-notes [contenteditable="true"],
+    .inv-bank [contenteditable="true"],
+    .inv-terms [contenteditable="true"] {
+      font-size: 0.875rem; color: var(--text-mid); line-height: 1.8;
+      outline: none;
+      border-radius: 4px; padding: 4px 6px; margin: -4px -6px;
+      transition: background 0.2s;
+    }
+    .inv-notes [contenteditable="true"]:hover,
+    .inv-notes [contenteditable="true"]:focus,
+    .inv-bank [contenteditable="true"]:hover,
+    .inv-bank [contenteditable="true"]:focus,
+    .inv-terms [contenteditable="true"]:hover,
+    .inv-terms [contenteditable="true"]:focus {
+      background: rgba(181,154,106,0.06);
+    }
+    .inv-bank table {
+      width: 100%; font-size: 0.85rem; color: var(--text-mid);
+      border-collapse: collapse;
+    }
+    .inv-bank td { padding: 5px 0; }
+    .inv-bank td:first-child {
+      color: var(--charcoal); font-weight: 600;
+      width: 45%; vertical-align: top;
+    }
+
+    /* ── Signature ── */
+    .inv-signature {
+      display: flex; justify-content: flex-end;
+      margin-bottom: 0;
+    }
+    .inv-sig-box {
+      text-align: center; min-width: 220px;
+    }
+    .inv-sig-line {
+      width: 100%; height: 1px;
+      background: var(--charcoal);
+      margin-bottom: 10px;
+    }
+    .inv-sig-name {
+      font-family: var(--font-display); font-size: 1.1rem;
+      color: var(--charcoal);
+    }
+    .inv-sig-role {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold); margin-top: 3px;
+    }
+
+    /* ── Letterhead Footer ── */
+    .lh-footer {
+      background: var(--teal-dark);
+      padding: 24px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px;
+      position: relative;
+    }
+    .lh-footer::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .lh-footer-text {
+      font-size: 0.75rem; color: rgba(245,240,232,0.5);
+      line-height: 1.6;
+    }
+    .lh-footer-ornament {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .lh-footer-ornament span {
+      font-size: 0.55rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: rgba(181,154,106,0.4);
+    }
+    .lh-footer-ornament::before, .lh-footer-ornament::after {
+      content: '◈'; color: rgba(181,154,106,0.3); font-size: 0.6rem;
+    }
+
+    /* ── Status Badge ── */
+    .inv-status-wrap {
+      display: flex; align-items: center; gap: 12px; margin-top: 16px;
+    }
+    .inv-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: 100px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .inv-status--draft { background: rgba(181,154,106,0.12); color: var(--gold-dark); border: 1px solid rgba(181,154,106,0.3); }
+    .inv-status--paid  { background: rgba(21,128,61,0.1); color: #166534; border: 1px solid rgba(21,128,61,0.25); }
+    .inv-status--due   { background: rgba(220,38,38,0.1); color: #991b1b; border: 1px solid rgba(220,38,38,0.2); }
+    .inv-status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .inv-status--draft .inv-status-dot { background: var(--gold); }
+    .inv-status--paid  .inv-status-dot { background: #16a34a; }
+    .inv-status--due   .inv-status-dot { background: #dc2626; }
+
+    /* ══════════════════════════════════════════
+       PRINT STYLES
+    ══════════════════════════════════════════ */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white !important; }
+      .invoice-hero, .invoice-toolbar, .footer,
+      nav, .inv-add-row, .btn-remove-row,
+      .inv-tax-inputs input { /* inputs become static */ }
+      .invoice-hero, .invoice-toolbar { display: none !important; }
+      nav, footer { display: none !important; }
+      .invoice-wrapper { padding: 0 !important; }
+      .invoice-wrapper .container { max-width: 100% !important; padding: 0 !important; }
+      #invoiceDoc { box-shadow: none !important; border-radius: 0 !important; }
+      .inv-add-row { display: none !important; }
+      .btn-remove-row { display: none !important; }
+      .inv-party [contenteditable="true"]:hover,
+      .inv-table td [contenteditable="true"]:hover { background: transparent !important; }
+      .inv-notes [contenteditable="true"]:hover,
+      .inv-bank [contenteditable="true"]:hover { background: transparent !important; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .lh-header { padding: 40px 32px 28px; }
+      .inv-body   { padding: 36px 32px; }
+      .lh-ornament { padding: 14px 32px; }
+      .lh-footer  { padding: 20px 32px; }
+    }
+    @media (max-width: 700px) {
+      .lh-header__top { flex-direction: column; }
+      .lh-company-addr { text-align: left; }
+      .lh-invoice-title-row { flex-direction: column; align-items: flex-start; }
+      .lh-invoice-meta { text-align: left; }
+      .lh-meta-item { justify-content: flex-start; }
+      .inv-parties { grid-template-columns: 1fr; }
+      .inv-bottom-grid { grid-template-columns: 1fr; }
+      .inv-totals { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="images/logo.jpg" alt="Kensora by Kalakruthi" />
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="services.html">Services</a></li>
+      <li>
+        <a href="portfolio.html">Portfolio <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="portfolio.html#living">Living Spaces</a>
+          <a href="portfolio.html#bedroom">Bedrooms</a>
+          <a href="portfolio.html#kitchen">Kitchens</a>
+          <a href="portfolio.html#office">Home Office</a>
+          <a href="portfolio.html#villa">Villas &amp; Estates</a>
+          <a href="portfolio.html#hospitality">Hospitality</a>
+        </div>
+      </li>
+      <li><a href="materials.html">Materials</a></li>
+      <li><a href="process.html">Our Process</a></li>
+      <li><a href="about.html">About</a></li>
+      <li>
+        <a href="blog.html">Stories <span class="chevron"></span></a>
+        <div class="navbar__dropdown">
+          <a href="blog.html">All Stories</a>
+          <a href="blog.html#trends">Design Trends</a>
+          <a href="blog.html#materials">Material Guides</a>
+          <a href="blog.html#projects">Project Reveals</a>
+        </div>
+      </li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary">Book Consultation</a>
+    </div>
+    <div class="navbar__hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="materials.html">Materials &amp; Finishes</a>
+  <a href="process.html">Our Process</a>
+  <a href="about.html">About Us</a>
+  <a href="blog.html">Stories &amp; Inspiration</a>
+  <a href="invoice.html" style="color:var(--gold)">Invoice Generator</a>
+  <a href="contact.html" class="btn btn-primary mobile-cta" style="margin-top:16px;text-align:center;">Book Consultation</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="invoice-hero">
+  <div class="container">
+    <p class="subheading reveal" style="color:var(--gold);">Client Documents</p>
+    <h1 class="reveal reveal-delay-1">Invoice Generator</h1>
+    <p class="reveal reveal-delay-2">Create, customise, and print a professional invoice on official Kensora letterhead.</p>
+    <div class="inv-status-wrap reveal reveal-delay-3">
+      <button id="btnStatusDraft" class="inv-status inv-status--draft" onclick="setStatus('draft')">
+        <span class="inv-status-dot"></span> Draft
+      </button>
+      <button id="btnStatusPaid" class="inv-status inv-status--paid" onclick="setStatus('paid')" style="opacity:0.5">
+        <span class="inv-status-dot"></span> Paid
+      </button>
+      <button id="btnStatusDue" class="inv-status inv-status--due" onclick="setStatus('due')" style="opacity:0.5">
+        <span class="inv-status-dot"></span> Overdue
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOOLBAR ═══ -->
+<div class="invoice-toolbar">
+  <div class="container">
+    <span class="invoice-toolbar-label">Invoice #<span id="toolbarInvoiceNum">KEN-2025-001</span></span>
+    <button class="btn btn-outline" onclick="window.print()" id="btnPrint">
+      ⎙ &nbsp; Print / Save PDF
+    </button>
+    <button class="btn btn-primary" onclick="resetInvoice()" id="btnReset">
+      ↺ &nbsp; New Invoice
+    </button>
+  </div>
+</div>
+
+<!-- ═══ INVOICE DOCUMENT ═══ -->
+<div class="invoice-wrapper">
+  <div class="container">
+    <div id="invoiceDoc">
+
+      <!-- ── Letterhead Header ── -->
+      <div class="lh-header">
+        <div class="lh-header__top">
+          <div class="lh-logo-block">
+            <img src="images/logo.jpg" alt="Kensora by Kalakruthi" />
+            <div class="lh-tagline">Ultra-Premium Interiors · Kalakruthi</div>
+          </div>
+          <div class="lh-company-addr">
+            <strong>Kensora by Kalakruthi</strong>
+            Design Studio, Indiranagar<br/>
+            Bengaluru — 560 038, Karnataka<br/>
+            GSTIN: 29XXXXX0000X0XX<br/>
+            kensora@kalakruthi.com<br/>
+            +91 98765 43210
+          </div>
+        </div>
+        <div class="lh-invoice-title-row">
+          <div class="lh-invoice-word">Invoice</div>
+          <div class="lh-invoice-meta">
+            <div class="lh-meta-item">
+              <label>Invoice No.</label>
+              <input type="text" id="invNumber" value="KEN-2025-001" oninput="syncInvoiceNum(this.value)" />
+            </div>
+            <div class="lh-meta-item">
+              <label>Invoice Date</label>
+              <input type="date" id="invDate" />
+            </div>
+            <div class="lh-meta-item">
+              <label>Due Date</label>
+              <input type="date" id="invDueDate" />
+            </div>
+            <div class="lh-meta-item">
+              <label>Project Ref.</label>
+              <input type="text" id="invProject" value="PRJ-2025-BLR-042" />
+            </div>
+          </div>
+        </div>
+      </div><!-- /lh-header -->
+
+      <!-- Ornament Strip -->
+      <div class="lh-ornament">
+        <div class="lh-ornament-line"></div>
+      </div>
+
+      <!-- ── Invoice Body ── -->
+      <div class="inv-body">
+
+        <!-- Parties -->
+        <div class="inv-parties">
+          <div class="inv-party">
+            <div class="inv-party__label">Bill To</div>
+            <div class="inv-party-name" contenteditable="true" id="clientName">Mr. Arjun Mehta</div>
+            <div class="inv-party-detail" contenteditable="true" id="clientAddress">
+              3rd Floor, Prestige Towers<br/>
+              MG Road, Bengaluru 560 001<br/>
+              Karnataka, India<br/>
+              GSTIN: 29YYYYY1234Y1YY
+            </div>
+          </div>
+          <div class="inv-party">
+            <div class="inv-party__label">Project Details</div>
+            <div class="inv-party-name" contenteditable="true" id="projectName">Serene Hilltop Estate</div>
+            <div class="inv-party-detail" contenteditable="true" id="projectDetail">
+              Full-Home Interior Design<br/>
+              Whitefield, Bengaluru<br/>
+              Area: 4,200 sq.ft<br/>
+              Phase: 2 of 3
+            </div>
+          </div>
+          <div class="inv-party">
+            <div class="inv-party__label">Your Designer</div>
+            <div class="inv-party-name" contenteditable="true" id="designerName">Ms. Anika Sharma</div>
+            <div class="inv-party-detail" contenteditable="true" id="designerDetail">
+              Principal Designer<br/>
+              anika@kalakruthi.com<br/>
+              +91 94123 45678<br/>
+              Studio: Indiranagar, Bengaluru
+            </div>
+          </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="inv-table-wrap">
+          <table class="inv-table" id="itemsTable">
+            <thead>
+              <tr>
+                <th style="width:36px">#</th>
+                <th>Description of Work / Material</th>
+                <th style="width:80px">Qty</th>
+                <th style="width:120px">Rate (₹)</th>
+                <th style="width:120px">Amount (₹)</th>
+                <th class="td-action" style="width:36px"></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody">
+              <!-- Rows inserted by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <button class="inv-add-row" onclick="addRow()">
+          <span class="inv-add-row-icon">+</span>
+          Add Line Item
+        </button>
+
+        <!-- Totals -->
+        <div class="inv-totals-section" style="margin-top:32px;">
+          <div class="inv-totals">
+            <div class="inv-total-row">
+              <label>Subtotal</label>
+              <span class="inv-total-val" id="displaySubtotal">₹ 0.00</span>
+            </div>
+            <div class="inv-total-row">
+              <label>CGST %</label>
+              <div class="inv-tax-inputs">
+                <input type="number" id="cgstRate" value="9" min="0" max="100" onchange="recalc()" />
+                <span class="inv-total-val" style="min-width:90px;text-align:right;" id="displayCGST">₹ 0.00</span>
+              </div>
+            </div>
+            <div class="inv-total-row">
+              <label>SGST %</label>
+              <div class="inv-tax-inputs">
+                <input type="number" id="sgstRate" value="9" min="0" max="100" onchange="recalc()" />
+                <span class="inv-total-val" style="min-width:90px;text-align:right;" id="displaySGST">₹ 0.00</span>
+              </div>
+            </div>
+            <div class="inv-total-row">
+              <label>Discount (₹)</label>
+              <div class="inv-tax-inputs">
+                <input type="number" id="discountAmt" value="0" min="0" onchange="recalc()" />
+                <span class="inv-total-val" style="min-width:90px;text-align:right;color:#dc2626;" id="displayDiscount">— ₹ 0.00</span>
+              </div>
+            </div>
+            <div class="inv-total-row inv-grand">
+              <label>Grand Total</label>
+              <span class="inv-total-val" id="displayTotal">₹ 0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Grid: Notes + Bank -->
+        <div class="inv-bottom-grid">
+          <div class="inv-notes">
+            <div class="inv-section-label">Notes &amp; Payment Terms</div>
+            <div class="inv-terms" contenteditable="true">
+              Payment is due within 15 days of invoice date.<br/>
+              Cheques and NEFT/RTGS accepted. Please quote invoice number in transfer description.<br/>
+              All disputes subject to Bengaluru jurisdiction.<br/>
+              Thank you for choosing Kensora by Kalakruthi.
+            </div>
+          </div>
+          <div class="inv-bank">
+            <div class="inv-section-label">Bank Details</div>
+            <table>
+              <tr>
+                <td>Account Name</td>
+                <td contenteditable="true">Kalakruthi Designs Pvt Ltd</td>
+              </tr>
+              <tr>
+                <td>Bank</td>
+                <td contenteditable="true">HDFC Bank, Indiranagar</td>
+              </tr>
+              <tr>
+                <td>Account No.</td>
+                <td contenteditable="true">XXXX XXXX XXXX 4210</td>
+              </tr>
+              <tr>
+                <td>IFSC</td>
+                <td contenteditable="true">HDFC0001234</td>
+              </tr>
+              <tr>
+                <td>UPI / QR</td>
+                <td contenteditable="true">kensora@hdfcbank</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Signature -->
+        <div class="inv-signature">
+          <div class="inv-sig-box">
+            <div style="height:56px;"></div><!-- space for physical signature -->
+            <div class="inv-sig-line"></div>
+            <div class="inv-sig-name">Authorised Signatory</div>
+            <div class="inv-sig-role">Kensora by Kalakruthi</div>
+          </div>
+        </div>
+
+      </div><!-- /inv-body -->
+
+      <!-- ── Letterhead Footer ── -->
+      <div class="lh-footer">
+        <div class="lh-footer-text">
+          Kensora by Kalakruthi · Design Studio, Indiranagar, Bengaluru — 560 038<br/>
+          GSTIN: 29XXXXX0000X0XX · kensora@kalakruthi.com · +91 98765 43210
+        </div>
+        <div class="lh-footer-ornament">
+          <span>Ultra-Premium Interiors</span>
+        </div>
+      </div>
+
+    </div><!-- /invoiceDoc -->
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <img src="images/logo.jpg" alt="Kensora by Kalakruthi" />
+        <p>Ultra-premium interior design crafted with the world's finest materials, master artisans, and a relentless pursuit of perfection.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram">&#9670;</a>
+          <a href="#" aria-label="Facebook">&#9632;</a>
+          <a href="#" aria-label="Pinterest">&#11044;</a>
+          <a href="#" aria-label="LinkedIn">&#9670;</a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="materials.html">Materials</a></li>
+          <li><a href="process.html">Our Process</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="blog.html">Stories</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="invoice.html" style="color:var(--gold)">Invoice</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html#full-home">Full-Home Interiors</a></li>
+          <li><a href="services.html#kitchen">Modular Kitchens</a></li>
+          <li><a href="services.html#wardrobe">Wardrobes &amp; Storage</a></li>
+          <li><a href="services.html#commercial">Commercial Spaces</a></li>
+          <li><a href="services.html#turnkey">Turnkey Projects</a></li>
+          <li><a href="services.html#renovation">Renovation</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact Us</h4>
+        <div class="footer__contact-item">
+          <div class="footer__contact-icon">✉</div>
+          <span>kensora@kalakruthi.com</span>
+        </div>
+        <div class="footer__contact-item">
+          <div class="footer__contact-icon">☎</div>
+          <span>+91 98765 43210</span>
+        </div>
+        <div class="footer__contact-item">
+          <div class="footer__contact-icon">⊹</div>
+          <span>Design Studio, Indiranagar,<br/>Bengaluru — 560 038</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Kensora by Kalakruthi. All rights reserved.</p>
+      <div class="footer__awards">
+        <span class="footer__award-badge">India Design Award 2024</span>
+        <span class="footer__award-badge">Luxury Interior Guild</span>
+      </div>
+      <div class="footer__legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+/* ══════════════════════════════════════════
+   INVOICE LOGIC
+══════════════════════════════════════════ */
+
+// ── Default line items ──
+const DEFAULT_ROWS = [
+  { desc: 'Concept Design & 3D Visualisation',                qty: 1,  rate: 85000 },
+  { desc: 'Living & Dining — Italian Marble Flooring (supply + lay)', qty: 420, rate: 980   },
+  { desc: 'Master Bedroom — Teak Wood Panelling (custom)',    qty: 280, rate: 1250  },
+  { desc: 'Modular Kitchen — MDF + Lacquer Finish Cabinets', qty: 18,  rate: 14500 },
+  { desc: 'Brushed Brass Hardware & Fixtures (imported)',     qty: 1,   rate: 62000 },
+  { desc: 'Site Supervision & Project Management Fee',        qty: 1,   rate: 75000 },
+];
+
+let rows = [];
+
+function fmt(n) {
+  return '₹ ' + parseFloat(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function addRow(desc='', qty=1, rate=0) {
+  const id = Date.now();
+  rows.push({ id, desc, qty, rate });
+  renderRows();
+  recalc();
+}
+
+function removeRow(id) {
+  rows = rows.filter(r => r.id !== id);
+  renderRows();
+  recalc();
+}
+
+function renderRows() {
+  const tbody = document.getElementById('itemsBody');
+  tbody.innerHTML = '';
+  rows.forEach((r, i) => {
+    const amount = (parseFloat(r.qty)||0) * (parseFloat(r.rate)||0);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text-light);font-size:0.8rem;">${i+1}</td>
+      <td class="td-desc">
+        <div contenteditable="true" class="row-desc" data-id="${r.id}" onblur="updateField(${r.id},'desc',this.innerText)">${r.desc}</div>
+      </td>
+      <td class="td-qty" style="text-align:right">
+        <div contenteditable="true" class="row-qty" data-id="${r.id}" onblur="updateField(${r.id},'qty',this.innerText)">${r.qty}</div>
+      </td>
+      <td class="td-rate" style="text-align:right">
+        <div contenteditable="true" class="row-rate" data-id="${r.id}" onblur="updateField(${r.id},'rate',this.innerText)">${r.rate}</div>
+      </td>
+      <td class="td-amount">${fmt(amount)}</td>
+      <td class="td-action">
+        <button class="btn-remove-row" onclick="removeRow(${r.id})" title="Remove row">✕</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateField(id, field, val) {
+  const r = rows.find(r => r.id === id);
+  if (!r) return;
+  if (field === 'qty' || field === 'rate') {
+    r[field] = parseFloat(val.replace(/[^0-9.]/g,'')) || 0;
+  } else {
+    r[field] = val;
+  }
+  recalc();
+  // Re-render amounts without losing focus
+  const amounts = document.querySelectorAll('.td-amount');
+  rows.forEach((row, i) => {
+    const amt = (parseFloat(row.qty)||0) * (parseFloat(row.rate)||0);
+    if (amounts[i]) amounts[i].textContent = fmt(amt);
+  });
+}
+
+function recalc() {
+  const subtotal = rows.reduce((s, r) => s + (parseFloat(r.qty)||0)*(parseFloat(r.rate)||0), 0);
+  const cgstPct  = parseFloat(document.getElementById('cgstRate').value) || 0;
+  const sgstPct  = parseFloat(document.getElementById('sgstRate').value) || 0;
+  const disc     = parseFloat(document.getElementById('discountAmt').value) || 0;
+  const cgst     = subtotal * cgstPct / 100;
+  const sgst     = subtotal * sgstPct / 100;
+  const grand    = subtotal + cgst + sgst - disc;
+
+  document.getElementById('displaySubtotal').textContent = fmt(subtotal);
+  document.getElementById('displayCGST').textContent     = fmt(cgst);
+  document.getElementById('displaySGST').textContent     = fmt(sgst);
+  document.getElementById('displayDiscount').textContent = '— ' + fmt(disc);
+  document.getElementById('displayTotal').textContent    = fmt(grand < 0 ? 0 : grand);
+}
+
+function syncInvoiceNum(val) {
+  document.getElementById('toolbarInvoiceNum').textContent = val;
+}
+
+function setStatus(s) {
+  ['draft','paid','due'].forEach(st => {
+    const btn = document.getElementById('btnStatus' + st.charAt(0).toUpperCase() + st.slice(1));
+    btn.style.opacity = (st === s) ? '1' : '0.4';
+  });
+}
+
+function resetInvoice() {
+  if (!confirm('Reset all fields to default sample invoice?')) return;
+  rows = [];
+  DEFAULT_ROWS.forEach(r => addRow(r.desc, r.qty, r.rate));
+  document.getElementById('invNumber').value = 'KEN-' + new Date().getFullYear() + '-001';
+  syncInvoiceNum(document.getElementById('invNumber').value);
+  // set dates
+  const today = new Date();
+  const due   = new Date(today); due.setDate(due.getDate() + 15);
+  document.getElementById('invDate').value    = today.toISOString().split('T')[0];
+  document.getElementById('invDueDate').value = due.toISOString().split('T')[0];
+  setStatus('draft');
+}
+
+// ── Init ──
+(function init() {
+  // Set today's date
+  const today = new Date();
+  const due   = new Date(today); due.setDate(due.getDate() + 15);
+  document.getElementById('invDate').value    = today.toISOString().split('T')[0];
+  document.getElementById('invDueDate').value = due.toISOString().split('T')[0];
+
+  // Load default rows
+  DEFAULT_ROWS.forEach(r => addRow(r.desc, r.qty, r.rate));
+  setStatus('draft');
+})();
+</script>
+</body>
+</html>
